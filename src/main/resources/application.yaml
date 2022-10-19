@@ -1,0 +1,17 @@
+spring.servlet.multipart:
+  max-file-size: 1280KB
+  max-request-size: 1280KB
+
+spring:
+  h2.console.enabled: true
+  datasource.url=jdbc:h2:mem: testdb
+  data.jpa.repositories.bootstrap-mode: default
+
+
+resilience4j.ratelimiter:
+  instances:
+    tickerService:
+      limitForPeriod: 10
+      limitRefreshPeriod: 10s
+      timeoutDuration: 5
+      registerHealthIndicator: true
