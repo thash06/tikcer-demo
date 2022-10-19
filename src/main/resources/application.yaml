@@ -15,3 +15,16 @@ resilience4j.ratelimiter:
       limitRefreshPeriod: 10s
       timeoutDuration: 5
       registerHealthIndicator: true
+
+resilience4j.bulkhead:
+  instances:
+    tickerService:
+      maxWaitDuration: 1000ms
+      maxConcurrentCall: 8
+
+#resilience4j.thread-pool-bulkhead:
+#  instances:
+#    tickerService:
+#      maxThreadPoolSize: 8
+#      coreThreadPoolSize: 1
+#      queueCapacity: 10

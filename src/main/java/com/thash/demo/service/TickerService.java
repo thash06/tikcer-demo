@@ -5,10 +5,10 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.thash.demo.model.IndexData;
 import com.thash.demo.model.Ticker;
 import com.thash.demo.repository.TickerRepository;
 import com.thash.demo.util.IndexParser;
+import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,13 +35,51 @@ public class TickerService {
         this.tickerRepository = tickerRepository;
     }
 
-
     public boolean saveTickerData(MultipartFile file) throws IOException {
         List<Ticker> indices = parseFile(file);
         tickerRepository.saveAll(indices);
         Iterable<Ticker> indexData = tickerRepository.findAll();
         indexData.forEach(index -> log.info("Fetched for DB {}", index));
         return true;
+    }
+
+    @RateLimiter(name = TICKER_SERVICE, fallbackMethod = "rateLimiterFallback")
+    public List<Ticker> findByTicker(String ticker) {
+        return tickerRepository.findIndexDataByStock(ticker);
+    }
+
+    public List<Ticker> rateLimiterFallback(String cause, Throwable throwable) {
+        log.error("Inside rateLimiterFallback, cause - {} - {}", cause, throwable.getMessage());
+        return Collections.emptyList();
+    }
+
+    @Bulkhead(name = TICKER_SERVICE, fallbackMethod = "bulkHeadFallback")
+    public Ticker saveTicker(String tickerJson) throws JsonProcessingException {
+        Ticker ticker = null;
+        ticker = convertJsonToTicker(tickerJson);
+        return tickerRepository.save(ticker);
+    }
+
+    private Ticker convertJsonToTicker(String tickerJson) throws JsonProcessingException {
+        Ticker ticker;
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+            mapper.registerModule(new JavaTimeModule());
+            mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+            ticker = mapper.readValue(tickerJson, Ticker.class);
+            log.info(" Index Data : {}", ticker);
+
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+            throw e;
+        }
+        return ticker;
+    }
+
+    public Ticker bulkHeadFallback(String tickerJson, Throwable t) throws JsonProcessingException {
+        log.error("Inside bulkHeadFallback, cause - {}", t.toString());
+        return convertJsonToTicker(tickerJson);
     }
 
     private List<Ticker> parseFile(MultipartFile file) throws IOException {
@@ -62,31 +100,5 @@ public class TickerService {
             throw e;
         }
         return indices;
-    }
-
-    @RateLimiter(name = TICKER_SERVICE, fallbackMethod = "rateLimiterFallback")
-    public List<Ticker> findByTicker(String ticker) {
-        return tickerRepository.findIndexDataByStock(ticker);
-    }
-
-    public List<Ticker> rateLimiterFallback(String cause, Throwable throwable){
-        log.error("Inside rateLimiterFallback, cause - {} - {}", cause, throwable.getMessage());
-        return Collections.emptyList();
-    }
-
-    public Ticker saveTicker(String tickerJson) throws JsonProcessingException {
-        Ticker ticker = null;
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-            mapper.registerModule(new JavaTimeModule());
-            mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-            ticker = mapper.readValue(tickerJson, Ticker.class);
-            log.info(" Index Data : {}", ticker);
-            return tickerRepository.save(ticker);
-        } catch (IOException e) {
-            log.error(e.getMessage(), e);
-            throw e;
-        }
     }
 }
