@@ -18,46 +18,46 @@ import java.util.List;
 @Log4j2
 public class TickerController {
 
-	private final StorageService storageService;
-	private final TickerService tickerService;
+    private final StorageService storageService;
+    private final TickerService tickerService;
 
-	@Autowired
-	public TickerController(StorageService storageService, TickerService tickerService) {
-		this.storageService = storageService;
-		this.tickerService = tickerService;
-	}
+    @Autowired
+    public TickerController(StorageService storageService, TickerService tickerService) {
+        this.storageService = storageService;
+        this.tickerService = tickerService;
+    }
 
 
-	@RequestMapping(path = "/upload", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<String> handleFileUpload(@RequestPart("file") MultipartFile file) {
-		try {
-			storageService.store(file);
-			tickerService.saveTickerData(file);
-			return ResponseEntity.status(HttpStatus.CREATED).body("UPLOAD SUCCESSFUL");
-		}catch( Exception e ){
-			return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+    @RequestMapping(path = "/upload", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> handleFileUpload(@RequestPart("file") MultipartFile file) {
+        try {
+            storageService.store(file);
+            tickerService.saveTickerData(file);
+            return ResponseEntity.status(HttpStatus.CREATED).body("UPLOAD SUCCESSFUL");
+        } catch (Exception e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
-	}
+    }
 
-	@RequestMapping(value = "/stocks/{ticker}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<List<Ticker>> findByTicker(@PathVariable(value = "ticker") String ticker) {
-		try {
-			return ResponseEntity.status(HttpStatus.OK).body(tickerService.findByTicker(ticker));
-		}catch( Exception e ){
-			return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
+    @RequestMapping(value = "/stocks/{ticker}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<List<Ticker>> findByTicker(@PathVariable(value = "ticker") String ticker) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(tickerService.findByTicker(ticker));
+        } catch (Exception e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
-	@RequestMapping(path = "/save", method = RequestMethod.POST)
-	@ResponseStatus(HttpStatus.CREATED)
-	@ResponseBody
-	public ResponseEntity<Ticker> saveTicker(@RequestBody final String ticker){
-		try {
-			return ResponseEntity.status(HttpStatus.CREATED).body(tickerService.saveTicker(ticker));
-		}catch (Exception e){
-			return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
+    @RequestMapping(path = "/save", method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    public ResponseEntity<Ticker> saveTicker(@RequestBody final String ticker) {
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(tickerService.saveTicker(ticker));
+        } catch (Exception e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }

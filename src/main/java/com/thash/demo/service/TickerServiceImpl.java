@@ -25,7 +25,7 @@ import java.util.Objects;
 
 @Service(value = "tickerService")
 @Log4j2
-public class TickerServiceImpl implements TickerService{
+public class TickerServiceImpl implements TickerService {
     private static final String TICKER_SERVICE = "tickerService";
     private final IndexParser indexParser;
     private final TickerRepository tickerRepository;

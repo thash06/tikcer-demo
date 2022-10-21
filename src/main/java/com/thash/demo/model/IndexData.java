@@ -4,12 +4,13 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -50,7 +51,7 @@ public class IndexData {
     private BigDecimal previousWeeksVolume;
     private BigDecimal nextWeeksOpen;
     private BigDecimal nextWeeksClose;
-//    @OneToOne(cascade=CascadeType.PERSIST)
+    //    @OneToOne(cascade=CascadeType.PERSIST)
 //    private TickerCurrency nextWeeksOpen;
 //    @OneToOne(cascade=CascadeType.PERSIST)
 //    private TickerCurrency nextWeeksClose;

@@ -1,7 +1,7 @@
 package com.thash.demo;
+
 import com.thash.demo.model.IndexData;
 import com.thash.demo.model.TickerCurrency;
-import io.swagger.models.auth.In;
 import org.springframework.util.StringUtils;
 
 import java.io.BufferedReader;
@@ -11,9 +11,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 import java.util.StringTokenizer;
 
 public class ParseTickerFile {

@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatter;
 @Component
 public class IndexParser {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy");
+
     public Ticker parseStringIntoIndexData(String line) {
 
         String[] columns = line.split(",");
@@ -43,15 +44,15 @@ public class IndexParser {
         return ticker;
     }
 
-    private TickerCurrency createTickerCurrency(String value, Long id){
+    private TickerCurrency createTickerCurrency(String value, Long id) {
         return new TickerCurrency(id, Character.toString(value.charAt(0)), new BigDecimal(value.substring(1)));
     }
 
-    private BigDecimal createCurrency(String value){
+    private BigDecimal createCurrency(String value) {
         return new BigDecimal(value.substring(1));
     }
 
-    private BigDecimal createBigDecimalValue(String value){
+    private BigDecimal createBigDecimalValue(String value) {
         return !StringUtils.hasLength(value) ? null : new BigDecimal(value);
     }
 }

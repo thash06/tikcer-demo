@@ -12,15 +12,15 @@ import org.springframework.context.annotation.Bean;
 @EnableConfigurationProperties(StorageProperties.class)
 public class TickerApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(TickerApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(TickerApplication.class, args);
+    }
 
-	@Bean
-	CommandLineRunner init(StorageService storageService) {
-		return (args) -> {
-			storageService.init();
-		};
-	}
+    @Bean
+    CommandLineRunner init(StorageService storageService) {
+        return (args) -> {
+            storageService.init();
+        };
+    }
 
 }
