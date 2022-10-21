@@ -1,6 +1,5 @@
 package com.thash.demo.util;
 
-import com.thash.demo.model.IndexData;
 import com.thash.demo.model.Ticker;
 import com.thash.demo.model.TickerCurrency;
 import org.springframework.stereotype.Component;
@@ -9,8 +8,6 @@ import org.springframework.util.StringUtils;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Random;
-import java.util.StringTokenizer;
 
 @Component
 public class IndexParser {

@@ -1,6 +1,5 @@
 package com.thash.demo.controller;
 
-import com.thash.demo.model.IndexData;
 import com.thash.demo.model.Ticker;
 import com.thash.demo.service.StorageService;
 import com.thash.demo.service.TickerService;
@@ -40,7 +39,7 @@ public class TickerController {
 	}
 
 	@RequestMapping(value = "/stocks/{ticker}", method = RequestMethod.GET, produces = "application/json")
-	public List<Ticker> getUserById(@PathVariable(value = "ticker") String ticker) {
+	public List<Ticker> findByTicker(@PathVariable(value = "ticker") String ticker) {
 		return tickerService.findByTicker(ticker);
 	}
 
