@@ -1,7 +1,7 @@
 package com.thash.demo.util;
 
 import com.thash.demo.model.Ticker;
-import com.thash.demo.model.TickerCurrency;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 @Component
+@Log4j2
 public class IndexParser {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy");
 
@@ -21,7 +22,7 @@ public class IndexParser {
         // previous_weeks_volume,next_weeks_open,next_weeks_close,
         // percent_change_next_weeks_price,days_to_next_dividend,percent_return_next_dividend
 
-        Ticker ticker = Ticker.builder()
+        return Ticker.builder()
                 .quarter(Integer.parseInt(columns[0]))
                 .stock(columns[1])
                 .date(LocalDate.parse(columns[2], formatter))
@@ -41,18 +42,25 @@ public class IndexParser {
                 .daysToNextDividend(createBigDecimalValue(columns[14]))
                 .percentReturnNextDividend(createBigDecimalValue(columns[15]))
                 .build();
-        return ticker;
     }
 
-    private TickerCurrency createTickerCurrency(String value, Long id) {
-        return new TickerCurrency(id, Character.toString(value.charAt(0)), new BigDecimal(value.substring(1)));
-    }
+//    private TickerCurrency createTickerCurrency(String value, Long id) {
+//        return new TickerCurrency(id, Character.toString(value.charAt(0)), new BigDecimal(value.substring(1)));
+//    }
 
-    private BigDecimal createCurrency(String value) {
-        return new BigDecimal(value.substring(1));
-    }
+//    private BigDecimal createCurrency(String value) {
+//        return new BigDecimal(value.substring(1));
+//    }
 
     private BigDecimal createBigDecimalValue(String value) {
-        return !StringUtils.hasLength(value) ? null : new BigDecimal(value);
+        if(!StringUtils.hasLength(value)){
+            return null;
+        }
+        try {
+            return new BigDecimal(value);
+        }catch(Exception e){
+            log.error(e.getMessage(), e);
+            return null;
+        }
     }
 }

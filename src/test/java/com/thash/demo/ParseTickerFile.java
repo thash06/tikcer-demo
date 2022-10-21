@@ -15,7 +15,14 @@ import java.util.StringTokenizer;
 
 public class ParseTickerFile {
     public static void main(String a[]){
-        String path = "/Users/tarhashm/Documents/data/study/IdeaProjects/demo/dow_jones_index.data";
+
+        System.out.println(createBigDecimalValue("123"));
+        System.out.println(createBigDecimalValue("0.123"));
+        System.out.println(createBigDecimalValue(null));
+        System.out.println(createBigDecimalValue(""));
+        System.out.println(createBigDecimalValue("abc"));
+
+        String path = "/Users/thash06/IdeaProjects/tikcer-demo/src/main/resources/test/dow_jones_index.data";
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String line;
             int i=0;
@@ -34,6 +41,7 @@ public class ParseTickerFile {
             e.printStackTrace();
         }
     }
+
 
 
     private static IndexData createIndexData(String line) {
@@ -82,6 +90,14 @@ public class ParseTickerFile {
     }
 
     private static BigDecimal createBigDecimalValue(String value){
-        return !StringUtils.hasLength(value) ? null : new BigDecimal(value);
+        if(!StringUtils.hasLength(value)){
+            return null;
+        }
+        try {
+            return new BigDecimal(value);
+        }catch(Exception e){
+            System.err.println(e);
+            return null;
+        }
     }
 }
