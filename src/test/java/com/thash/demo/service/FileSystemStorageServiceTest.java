@@ -1,5 +1,9 @@
 package com.thash.demo.service;
 
+import com.thash.demo.config.StorageProperties;
+import com.thash.demo.repository.TickerRepository;
+import com.thash.demo.util.IndexParser;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +15,15 @@ import org.springframework.web.multipart.MultipartFile;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+
 class FileSystemStorageServiceTest {
-
-    @Autowired
-    FileSystemStorageService testClass;
-
+    private StorageService testClass;
+    private StorageProperties storageProperties;
+    @BeforeEach
+    void setUp() {
+        storageProperties = new StorageProperties();
+        testClass = new FileSystemStorageService(storageProperties);
+    }
     @Test
     void store_emptyFile() throws Exception{
         MultipartFile tickerFile = Mockito.mock(MultipartFile.class);

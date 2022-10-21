@@ -3,10 +3,10 @@ package com.thash.demo.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.thash.demo.model.Ticker;
 import com.thash.demo.repository.TickerRepository;
+import com.thash.demo.util.IndexParser;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.Mockito;
 
 import java.time.LocalDate;
 
@@ -14,14 +14,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
 class TickerServiceImplTest {
-    @Autowired
-    TickerServiceImpl testClass;
 
-    @MockBean
-    @Autowired
+    private TickerService testClass;
+
     private TickerRepository tickerRepository;
+    private IndexParser indexParser;
+    @BeforeEach
+    void setUp() {
+        tickerRepository = Mockito.mock(TickerRepository.class);
+        indexParser = new IndexParser();
+        testClass = new TickerServiceImpl(indexParser, tickerRepository);
+    }
 
     @Test
     void saveTickerData() {
